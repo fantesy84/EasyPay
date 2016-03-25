@@ -2,18 +2,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.fantesy84</groupId>
-	<artifactId>easypay-parent</artifactId>
+	<artifactId>easypay-commons</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>4.2.5.RELEASE</spring.version>
 	</properties>
-	<name>easypay</name>
-	<modules>
-		<module>easypay-commons</module>
-		<module>easypay-tos</module>
-		<module>easypay-gateway</module>
-		<module>easypay-res</module>
-	</modules>
+	<name>Commons</name>
+	<description>通用包</description>
 </project>
