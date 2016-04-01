@@ -24,8 +24,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-
 import net.fantesy84.poi.description.TemplateDescription;
 
 /**
@@ -36,12 +34,15 @@ import net.fantesy84.poi.description.TemplateDescription;
  * @author junjie.ge
  *
  */
-public class HeaderHandlerFactoryBean implements HeaderHandler, InitializingBean {
+public class HeaderHandlerFactoryBean implements HeaderHandler {
 	private static final Logger logger = LoggerFactory.getLogger(HeaderHandlerFactoryBean.class);
 	private Map<String, TemplateDescription> descriptions;
 	private final int HEAD_ROW_INDEX = 0;
 	private final int SINGLE_SHEET_INDEX = 0;
 	private final String SYSTEM_TEMP_PATH_KEY = "java.io.tmpdir";
+	private Integer headRowIndex = HEAD_ROW_INDEX;
+	private Integer sheetIndex = SINGLE_SHEET_INDEX;
+	private String locations;
 	
 	/**
 	 * 
@@ -50,15 +51,24 @@ public class HeaderHandlerFactoryBean implements HeaderHandler, InitializingBean
 		super();
 		this.descriptions = new ConcurrentHashMap<>();
 	}
-	/* (non-Javadoc)
-	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-	 */
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		// TODO Auto-generated method stub
-		
+	protected void init() throws Exception {
+		if (locations != null) {
+			String[] eles = null;
+			if (locations.contains(",")) {
+				eles = locations.split(",");
+			} else if (locations.contains(";")) {
+				eles = locations.split(";");
+			} else {
+				eles = new String[]{locations};
+			}
+			for (int i = 0; i < eles.length; i++) {
+				
+			}
+			this.load(eles);
+		} else {
+			throw new IllegalArgumentException("必须指定模板路径!");
+		}
 	}
-	
 	/* (non-Javadoc)
 	 * @see net.fantesy84.poi.description.TemplateReader#load(java.lang.String[])
 	 */
@@ -105,8 +115,8 @@ public class HeaderHandlerFactoryBean implements HeaderHandler, InitializingBean
 		TemplateDescription templateDesc = new TemplateDescription();
 		templateDesc.setTemplateFile(templateFile);
 		Workbook wb = WorkbookFactory.create(templateFile);
-		Sheet sheet = wb.getSheetAt(SINGLE_SHEET_INDEX);
-		Row headRow = sheet.getRow(HEAD_ROW_INDEX);
+		Sheet sheet = wb.getSheetAt(sheetIndex);
+		Row headRow = sheet.getRow(headRowIndex);
 		Map<String, Class<?>> headers = templateDesc.getHeaders();
 		for (Cell cell : headRow) {
 			Comment comment = cell.getCellComment();
@@ -134,6 +144,24 @@ public class HeaderHandlerFactoryBean implements HeaderHandler, InitializingBean
 		templateDesc.setSheetName(sheet.getSheetName());
 		descriptions.put(templateFile.getName(), templateDesc);
 		wb.close();
+	}
+	/**
+	 * @param headRowIndex the headRowIndex to set
+	 */
+	public void setHeadRowIndex(Integer headRowIndex) {
+		this.headRowIndex = headRowIndex;
+	}
+	/**
+	 * @param sheetIndex the sheetIndex to set
+	 */
+	public void setSheetIndex(Integer sheetIndex) {
+		this.sheetIndex = sheetIndex;
+	}
+	/**
+	 * @param locations the locations to set
+	 */
+	public void setLocations(String locations) {
+		this.locations = locations;
 	}
 	
 }
