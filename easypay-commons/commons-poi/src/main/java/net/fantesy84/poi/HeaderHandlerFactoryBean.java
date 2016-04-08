@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import net.fantesy84.poi.description.TemplateDescription;
 
 /**
@@ -62,7 +63,8 @@ public class HeaderHandlerFactoryBean implements HeaderHandler {
 				eles = new String[]{locations};
 			}
 			for (int i = 0; i < eles.length; i++) {
-				
+				//当遇到"*"号时,扫描前一个目录下所有的文件或者目录
+				String parentPath = eles[i].substring(0, eles[i].indexOf("*"));
 			}
 			this.load(eles);
 		} else {
