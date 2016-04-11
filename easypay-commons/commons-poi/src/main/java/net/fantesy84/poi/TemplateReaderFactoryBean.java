@@ -32,7 +32,7 @@ import net.fantesy84.util.CollectionUtil;
 import net.fantesy84.util.ResourceUtil;
 
 /**
- * TypeName: ExcelTemplateReaderImpl
+ * TypeName: TemplateReaderFactoryBean
  * 
  * CreateTime: 2016年3月31日
  * UpdateTime: 

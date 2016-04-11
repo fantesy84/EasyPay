@@ -28,7 +28,6 @@ import net.fantesy84.util.reflect.ReflectUtils;
 
 /**
  * TypeName: ClassUtils
- * <P>TODO
  * 
  * <P>CreateTime: 2016年4月11日
  * <P>UpdateTime: 
@@ -62,14 +61,12 @@ public abstract class ClassUtil {
 
 
 	/**
-	 * Map with primitive wrapper type as key and corresponding primitive
-	 * type as value, for example: Integer.class -> int.class.
+	 * 包装类型为key,原始类型为value的映射.例如: Integer.class -> int.class.
 	 */
 	private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<Class<?>, Class<?>>(8);
 
 	/**
-	 * Map with primitive type as key and corresponding wrapper
-	 * type as value, for example: int.class -> Integer.class.
+	 * 原始类型为key,包装类型为value的映射.for example: int.class -> Integer.class.
 	 */
 	private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = new IdentityHashMap<Class<?>, Class<?>>(8);
 
