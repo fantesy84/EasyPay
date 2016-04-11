@@ -24,8 +24,8 @@ import java.util.logging.Logger;
  * @author junjie.ge
  *
  */
-public abstract class EncryptUtils {
-	private static final Logger logger = Logger.getLogger(EncryptUtils.class.getName());
+public abstract class EncryptUtil {
+	private static final Logger logger = Logger.getLogger(EncryptUtil.class.getName());
 	private static Charset charset = StandardCharsets.UTF_8;
 	
 	/**

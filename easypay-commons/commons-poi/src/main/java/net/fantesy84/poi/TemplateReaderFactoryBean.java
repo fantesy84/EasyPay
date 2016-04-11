@@ -8,14 +8,16 @@
 package net.fantesy84.poi;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Comment;
 import org.apache.poi.ss.usermodel.Row;
@@ -26,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fantesy84.poi.description.TemplateDescription;
+import net.fantesy84.util.CollectionUtil;
+import net.fantesy84.util.ResourceUtil;
 
 /**
  * TypeName: ExcelTemplateReaderImpl
@@ -35,42 +39,52 @@ import net.fantesy84.poi.description.TemplateDescription;
  * @author junjie.ge
  *
  */
-public class HeaderHandlerFactoryBean implements HeaderHandler {
-	private static final Logger logger = LoggerFactory.getLogger(HeaderHandlerFactoryBean.class);
+public class TemplateReaderFactoryBean implements TemplateReader {
+	private static final Logger logger = LoggerFactory.getLogger(TemplateReaderFactoryBean.class);
 	private Map<String, TemplateDescription> descriptions;
 	private final int HEAD_ROW_INDEX = 0;
 	private final int SINGLE_SHEET_INDEX = 0;
 	private final String SYSTEM_TEMP_PATH_KEY = "java.io.tmpdir";
 	private Integer headRowIndex = HEAD_ROW_INDEX;
 	private Integer sheetIndex = SINGLE_SHEET_INDEX;
-	private String locations;
+	
+	private String templatesDirectory;
+	private FilenameFilter namefilter;
+	private TemplateAliasGenerator templateAliasGenerator;
 	
 	/**
 	 * 
 	 */
-	public HeaderHandlerFactoryBean() {
+	public TemplateReaderFactoryBean() {
 		super();
 		this.descriptions = new ConcurrentHashMap<>();
 	}
-	protected void init() throws Exception {
-		if (locations != null) {
+	
+	/**
+	 * 初始化方法(读取模板),用于Spring
+	 * @throws Exception
+	 */
+	public void init() throws Exception {
+		if (templatesDirectory != null) {
 			String[] eles = null;
-			if (locations.contains(",")) {
-				eles = locations.split(",");
-			} else if (locations.contains(";")) {
-				eles = locations.split(";");
+			if (templatesDirectory.contains(",")) {
+				eles = templatesDirectory.split(",");
+			} else if (templatesDirectory.contains(";")) {
+				eles = templatesDirectory.split(";");
 			} else {
-				eles = new String[]{locations};
+				eles = new String[]{templatesDirectory};
 			}
+			List<String> list = new ArrayList<>();
 			for (int i = 0; i < eles.length; i++) {
-				//当遇到"*"号时,扫描前一个目录下所有的文件或者目录
-				String parentPath = eles[i].substring(0, eles[i].indexOf("*"));
+				CollectionUtil.mergeArrayIntoCollection(scanningExcelPath(eles[i]), list);
 			}
-			this.load(eles);
+			logger.debug("Scan {} catch these excel template: {}", templatesDirectory, list);
+			this.load(list.toArray(new String[list.size()]));
 		} else {
 			throw new IllegalArgumentException("必须指定模板路径!");
 		}
 	}
+	
 	/* (non-Javadoc)
 	 * @see net.fantesy84.poi.description.TemplateReader#load(java.lang.String[])
 	 */
@@ -110,10 +124,9 @@ public class HeaderHandlerFactoryBean implements HeaderHandler {
 	/**
 	 * 创建模板Excel的描述信息
 	 * @param templateFile 模板File对象
-	 * @throws IOException
-	 * @throws InvalidFormatException
+	 * @throws Exception 
 	 */
-	private void loadCommentTemplate(File templateFile) throws IOException, InvalidFormatException {
+	private void loadCommentTemplate(File templateFile) throws Exception {
 		TemplateDescription templateDesc = new TemplateDescription();
 		templateDesc.setTemplateFile(templateFile);
 		Workbook wb = WorkbookFactory.create(templateFile);
@@ -144,7 +157,8 @@ public class HeaderHandlerFactoryBean implements HeaderHandler {
 			}
 		}
 		templateDesc.setSheetName(sheet.getSheetName());
-		descriptions.put(templateFile.getName(), templateDesc);
+		String key = generateKey(templateFile.getName());
+		descriptions.put(key, templateDesc);
 		wb.close();
 	}
 	/**
@@ -159,11 +173,67 @@ public class HeaderHandlerFactoryBean implements HeaderHandler {
 	public void setSheetIndex(Integer sheetIndex) {
 		this.sheetIndex = sheetIndex;
 	}
+	
 	/**
-	 * @param locations the locations to set
+	 * @param templatesDirectory the templatesDirectory to set
 	 */
-	public void setLocations(String locations) {
-		this.locations = locations;
+	public void setTemplatesDirectory(String templatesDirectory) {
+		this.templatesDirectory = templatesDirectory;
 	}
 	
+	/**
+	 * @param namefilter the namefilter to set
+	 */
+	public void setNamefilter(FilenameFilter namefilter) {
+		this.namefilter = namefilter;
+	}
+
+	/**
+	 * @param templateAliasGenerator the templateAliasGenerator to set
+	 */
+	public void setTemplateAliasGenerator(TemplateAliasGenerator templateAliasGenerator) {
+		this.templateAliasGenerator = templateAliasGenerator;
+	}
+
+	/**
+	 * @param name
+	 * @return
+	 * @throws Exception 
+	 */
+	private String generateKey(String name) throws Exception {
+		if (templateAliasGenerator == null) {
+			templateAliasGenerator = new TemplateAliasGeneratorImpl();
+		}
+		return templateAliasGenerator.generate(name);
+	}
+	
+	/**
+	 * 递归所有excel文件路径
+	 * @param parentDirectory excel文件目录路径
+	 * @return 该目录下所有的excel路径集合
+	 * @throws FileNotFoundException
+	 */
+	private String[] scanningExcelPath(String parentDirectory) throws FileNotFoundException {
+		List<String> list = new ArrayList<>();
+		if (namefilter == null) {
+			namefilter = new ExcelFilenameFilter();
+		}
+		File parent = ResourceUtil.getFile(parentDirectory);
+		logger.debug("读取Excel模板目录位置: {}", parent.getPath());
+		if (parent.isDirectory()) {
+			String[] temp = null;
+			File[] subs = parent.listFiles();
+			for (int i = 0; i < subs.length; i++) {
+				if (subs[i].isDirectory()) {
+					temp = scanningExcelPath(subs[i].getPath());
+				} else {
+					if (namefilter.accept(subs[i], ExcelFilenameFilter.OOXML_EXCEL_EXTENSION) || namefilter.accept(subs[i], ExcelFilenameFilter.OOXML_EXCEL_EXTENSION)) {
+						list.add(subs[i].getPath());
+					}
+				}
+				CollectionUtil.mergeArrayIntoCollection(temp, list);
+			}
+		}
+		return list.toArray(new String[list.size()]);
+	}
 }

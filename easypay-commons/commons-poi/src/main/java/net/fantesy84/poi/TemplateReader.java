@@ -20,7 +20,7 @@ import net.fantesy84.poi.description.TemplateDescription;
  * @author junjie.ge
  *
  */
-public interface HeaderHandler {
+public interface TemplateReader {
 	/**
 	 * 从指定路径读取一个或多个Excel模板
 	 * @param templatePath 模板路径

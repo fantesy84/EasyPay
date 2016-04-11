@@ -12,7 +12,6 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -20,11 +19,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import net.fantesy84.poi.description.TemplateDescription;
-import net.fantesy84.util.reflect.ReflectUtils;
 
 /**
  * TypeName: DataHandlerImpl
- * TODO
  * 
  * CreateTime: 2016年3月31日
  * UpdateTime: 
@@ -32,13 +29,13 @@ import net.fantesy84.util.reflect.ReflectUtils;
  *
  */
 public class DataHandlerImpl implements DataHandler {
-
+	
 	/* (non-Javadoc)
 	 * @see net.fantesy84.poi.DataHandler#fill(java.util.List, net.fantesy84.poi.description.TemplateDescription)
 	 */
 	@Override
 	public <T> OutputStream fill(List<T> data, TemplateDescription desc) throws Exception {
-		return this.fill(data, desc, null);
+		return this.fill(data, desc, new DefaultFillStrategyImpl());
 	}
 
 	/* (non-Javadoc)
@@ -60,13 +57,11 @@ public class DataHandlerImpl implements DataHandler {
 				Cell cell = row.getCell(index);
 				String propertyName = headerIndexMap.get(index);
 				Class<?> javaType = headers.get(propertyName);
-				String value = null;
 				if (strategie != null) {
-					value = strategie.convert(ReflectUtils.getter(data.get(i), propertyName, javaType));
+					strategie.fill(cell, propertyName, javaType, data.get(i));
 				} else {
-					value = ReflectUtils.getter(data.get(i), propertyName, String.class);
+					throw new IllegalArgumentException("Strategy of filling cell is necessary! Please implemention net.fantesy84.poi.FillStrategy interface");
 				}
-				cell.setCellValue(new HSSFRichTextString(value));
 			}
 		}
 		OutputStream os = new ByteArrayOutputStream(4096);
