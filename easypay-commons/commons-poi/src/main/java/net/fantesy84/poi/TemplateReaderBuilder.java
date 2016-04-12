@@ -26,6 +26,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.fantesy84.poi.description.TemplateDescription;
+import net.fantesy84.util.DateUtil;
+import net.fantesy84.util.ResourceUtil;
 
 /**
  * TypeName: ExcelTemplateReaderImpl
@@ -35,19 +37,32 @@ import net.fantesy84.poi.description.TemplateDescription;
  * @author junjie.ge
  *
  */
-public class HeaderHandlerImpl implements HeaderHandler {
-	private static final Logger logger = LoggerFactory.getLogger(HeaderHandlerImpl.class);
+public class TemplateReaderBuilder implements TemplateReader {
+	private static final Logger logger = LoggerFactory.getLogger(TemplateReaderBuilder.class);
 	private Map<String, TemplateDescription> descriptions;
 	private final int HEAD_ROW_INDEX = 0;
 	private final int SINGLE_SHEET_INDEX = 0;
 	private final String SYSTEM_TEMP_PATH_KEY = "java.io.tmpdir";
 	
+	private static volatile TemplateReaderBuilder instance;
+	
 	/**
 	 * 
 	 */
-	public HeaderHandlerImpl() {
+	private TemplateReaderBuilder() {
 		super();
 		this.descriptions = new ConcurrentHashMap<>();
+	}
+	
+	public static TemplateReaderBuilder init() {
+		if (instance == null) {
+			synchronized (DateUtil.class) {
+				if (instance == null) {
+					instance = new TemplateReaderBuilder();
+				}
+			}
+		}
+		return instance;
 	}
 	/* (non-Javadoc)
 	 * @see net.fantesy84.poi.description.TemplateReader#load(java.lang.String[])
@@ -55,8 +70,9 @@ public class HeaderHandlerImpl implements HeaderHandler {
 	@Override
 	public void load(String... templatePath) throws Exception {
 		for (int i = 0; i < templatePath.length; i++) {
-			logger.debug("开始加载模板文件: {}", templatePath[i]);
-			File templateFile = new File(templatePath[i]);
+			File templateFile = ResourceUtil.getFile(templatePath[i]);
+			logger.debug("开始加载模板文件: {}", templateFile.getName());
+			//File templateFile = new File(path);
 			loadCommentTemplate(templateFile);
 		}
 	}

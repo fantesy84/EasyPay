@@ -23,7 +23,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fantesy84.util.StringUtils;
+import net.fantesy84.util.StringUtil;
 
 /**
  * TypeName: DateUtils
@@ -34,8 +34,8 @@ import net.fantesy84.util.StringUtils;
  * @author junjie.ge
  *
  */
-public class DateUtils {
-	private final static Logger logger = LoggerFactory.getLogger(DateUtils.class);
+public class DateUtil {
+	private final static Logger logger = LoggerFactory.getLogger(DateUtil.class);
 	public static final String FULL = "yyyy-MM-dd HH:mm:ss";
 	public static final String SHORT = "yyyyMMdd";
 	public static final String DATE = "yyyy-MM-dd";
@@ -45,17 +45,17 @@ public class DateUtils {
 	private static final int FEATRUE = 1;
 	
 	private static SimpleDateFormat format;
-	private static volatile DateUtils instance;
+	private static volatile DateUtil instance;
 	
-	private DateUtils(){
+	private DateUtil(){
 		format = new SimpleDateFormat(FULL);
 	}
 	
-	public static DateUtils getInstance(){
+	public static DateUtil getInstance(){
 		if (instance == null) {
-			synchronized (DateUtils.class) {
+			synchronized (DateUtil.class) {
 				if (instance == null) {
-					instance = new DateUtils();
+					instance = new DateUtil();
 				}
 			}
 		}
@@ -91,7 +91,7 @@ public class DateUtils {
 	 * @return {@link java.util.Date}对象
 	 */
 	public Date str2date(String src, String pattern) {
-		if (StringUtils.isNullOrEmpty(src)) {
+		if (StringUtil.isNullOrEmpty(src)) {
 			throw new RuntimeException("用于转换的日期字符串不能为空!");
 		}
 		getDateFormat(pattern);

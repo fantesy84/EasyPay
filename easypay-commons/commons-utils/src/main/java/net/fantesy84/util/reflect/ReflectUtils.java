@@ -19,7 +19,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fantesy84.util.StringUtils;
+import net.fantesy84.util.StringUtil;
 
 /**
  * TypeName: ReflectUtils
@@ -212,7 +212,7 @@ public class ReflectUtils {
 	}
 
 	public static Method[] searchMethods(Object instance, String regex) {
-		if (instance == null || StringUtils.isNullOrEmpty(regex)) {
+		if (instance == null || StringUtil.isNullOrEmpty(regex)) {
 			logger.error("反射的目标对象和正则表达式不能为空!", new IllegalArgumentException());
 		}
 		Method[] methods = instance.getClass().getDeclaredMethods();
@@ -294,7 +294,7 @@ public class ReflectUtils {
 	
 	public static void setter(Object targetObj, String fieldName, Object paramValue){
 		Class<?> clazz = targetObj.getClass();
-		String methodName = "set" + StringUtils.capitalize(fieldName);
+		String methodName = "set" + StringUtil.capitalize(fieldName);
 		Method writeMethod = null;
 		try {
 			writeMethod = clazz.getDeclaredMethod(methodName, ReflectEntry.getParameterTypes(new Object[]{paramValue}));
@@ -306,7 +306,7 @@ public class ReflectUtils {
 	
 	public static <T> T getter(Object targetObj, String fieldName, Class<T> fieldType) {
 		Class<?> clazz = targetObj.getClass();
-		String methodName = "get" + StringUtils.capitalize(fieldName);
+		String methodName = "get" + StringUtil.capitalize(fieldName);
 		Method readMethod = null;
 		T result = null;
 		try {

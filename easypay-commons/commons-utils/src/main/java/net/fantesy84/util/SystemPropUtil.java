@@ -11,7 +11,7 @@ package net.fantesy84.util;
  * @author Andronicus
  * @since 2015年11月9日
  */
-public abstract class SystemPropUtils {
+public abstract class SystemPropUtil {
 	
 	public static String getProperty(PropKeys key) {
 		return System.getProperty(key.getValue());

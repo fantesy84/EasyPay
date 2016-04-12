@@ -7,6 +7,8 @@
  */
 package net.fantesy84.poi;
 
+import org.apache.poi.ss.usermodel.Cell;
+
 /**
  * TypeName: FillStrategy
  * 
@@ -16,5 +18,5 @@ package net.fantesy84.poi;
  *
  */
 public interface FillStrategy {
-	String convert(Object original) throws Exception;
+	<T> void fill(Cell cell, String headName, Class<T> javaType, Object original) throws Exception;
 }
