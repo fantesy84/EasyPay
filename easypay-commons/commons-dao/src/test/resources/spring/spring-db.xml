@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+	<context:component-scan base-package="net.fantesy84.**.dao"/>
+	<!-- Read only dataSource -->
+	<bean id="readDS01" class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">
+		<property name="uniqueResourceName" value="easypay/sys/read01"/>
+		<property name="xaDataSourceClassName" value="${xaDriverClass}"/>
+		<property name="xaProperties">
+			<props>
+				<prop key="user">${datasource.read.user}</prop>
+				<prop key="password">${datasource.read.passwd}</prop>
+				<prop key="url">${datasource.read.url}</prop>
+			</props>
+		</property>
+		<property name="minPoolSize" value="${datasource.read.pool.min}"/>
+		<property name="maxPoolSize" value="${datasource.read.pool.max}"/>
+		<property name="reapTimeout" value="${datasource.read.pool.reapTimeout}"/>
+		<property name="testQuery" value="${datasource.pool.testQuery}"/>
+	</bean>
+	<!-- Write only dataSource -->
+	<bean id="writeDS01" class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">
+		<property name="uniqueResourceName" value="easypay/sys/write01"/>
+		<property name="xaDataSourceClassName" value="${xaDriverClass}"/>
+		<property name="xaProperties">
+			<props>
+				<prop key="user">${datasource.write.user}</prop>
+				<prop key="password">${datasource.write.passwd}</prop>
+				<prop key="url">${datasource.write.url}</prop>
+			</props>
+		</property>
+		<property name="minPoolSize" value="${datasource.write.pool.min}"/>
+		<property name="maxPoolSize" value="${datasource.write.pool.max}"/>
+		<property name="reapTimeout" value="${datasource.write.pool.reapTimeout}"/>
+		<property name="testQuery" value="${datasource.pool.testQuery}"/>
+	</bean>
+	<!-- Hibernate read only SessionFactory config -->
+	<bean id="read01_SessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="readDS01"/>
+		<property name="packagesToScan">
+			<list>
+				<value>net.fantesy84.**.domain</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">false</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- Hibernate read only SessionFactory config -->
+	<bean id="write01_SessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="writeDS01"/>
+		<property name="packagesToScan">
+			<list>
+				<value>net.fantesy84.**.domain</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">false</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- Atomikos Transaction manager config -->
+	<bean id="atomikosTransactionManager" class="com.atomikos.icatch.jta.UserTransactionManager"
+		init-method="init" destroy-method="close">
+		<property name="forceShutdown" value="true"/>
+	</bean>
+	<bean id="atomikosUserTransaction" class="com.atomikos.icatch.jta.UserTransactionImp">
+        <property name="transactionTimeout" value="300" />
+    </bean>
+    <!-- Spring JTA transaction manager -->
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManager" ref="atomikosTransactionManager"/>
+        <property name="userTransaction" ref="atomikosUserTransaction" />
+        <property name="allowCustomIsolationLevels" value="true"/> 
+    </bean>
+    <!-- Spring HibernateTemplate -->
+    <bean id="read01_HibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <property name="sessionFactory" ref="read01_SessionFactory"></property>
+    </bean>
+    <bean id="write01_HibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <property name="sessionFactory" ref="write01_SessionFactory"></property>
+    </bean>
+    
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>

@@ -6,8 +6,13 @@
 		<artifactId>easypay-commons</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>commons-hibernate</artifactId>
+	<artifactId>commons-dao</artifactId>
 	<dependencies>
+		<dependency>
+			<groupId>net.fantesy84</groupId>
+			<artifactId>commons-exception</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

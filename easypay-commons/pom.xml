@@ -24,9 +24,10 @@
 	<description>通用包</description>
 
 	<modules>
-		<module>commons-hibernate</module>
+		<module>commons-dao</module>
 		<module>commons-poi</module>
 		<module>commons-utils</module>
+		<module>commons-exception</module>
 	</modules>
 
 	<dependencyManagement>
