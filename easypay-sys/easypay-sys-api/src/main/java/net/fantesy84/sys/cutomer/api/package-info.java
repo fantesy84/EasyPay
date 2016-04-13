@@ -7,4 +7,4 @@
  * @author Administrator
  *
  */
-package net.fantesy84.sys.dictionary.api;
+package net.fantesy84.sys.cutomer.api;

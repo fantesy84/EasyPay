@@ -10,8 +10,17 @@
 	<name>基础系统持久化项目</name>
 	<dependencies>
 		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>net.fantesy84</groupId>
 			<artifactId>easypay-sys-domain</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.fantesy84</groupId>
+			<artifactId>commons-dao</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

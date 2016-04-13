@@ -12,6 +12,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>net.fantesy84</groupId>
+			<artifactId>easypay-sys-biz</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>

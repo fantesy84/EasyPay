@@ -12,8 +12,13 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import net.fantesy84.exception.EasypayException;
 
@@ -25,7 +30,12 @@ import net.fantesy84.exception.EasypayException;
  * @author junjie.ge
  *
  */
+@Repository("jdbcReadOnlyDao")
 public class JdbcReadOnlyDAOImpl extends NamedParameterJdbcDaoSupport implements JdbcReadOnlyDAO {
+	@Autowired
+	public void setReadDataSource(@Qualifier("readDS01") DataSource dataSource) {
+		super.setDataSource(dataSource);
+	}
 
 	/* (non-Javadoc)
 	 * @see net.fantesy84.sys.common.dao.JdbcReadOnlyDAO#selectUniqueResult(java.lang.String, java.lang.Class, java.io.Serializable)

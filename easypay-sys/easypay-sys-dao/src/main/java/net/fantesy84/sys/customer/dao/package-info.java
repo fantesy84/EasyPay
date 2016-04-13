@@ -7,4 +7,4 @@
  * @author Administrator
  *
  */
-package net.fantesy84.sys.dictionary.dao;
+package net.fantesy84.sys.customer.dao;
