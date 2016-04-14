@@ -7,11 +7,8 @@
 	<packaging>pom</packaging>
 	<name>易付基础系统</name>
 	<properties>
-		<release.tarBase>http://192.168.0.253/svn/easypay/sys/tags</release.tarBase>
-		<release.branchBase>http://192.168.0.253/svn/easypay/sys/branches</release.branchBase>
-		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
+
 		<junit.version>4.12</junit.version>
 		<spring.version>4.2.5.RELEASE</spring.version>
 		<spring-data.version>1.7.1.RELEASE</spring-data.version>
@@ -25,17 +22,6 @@
 		<jackson.version>2.6.5</jackson.version>
 		<mysql-driver.version>5.1.38</mysql-driver.version>
 	</properties>
-	<distributionManagement>
-		<repository>
-			<id>release</id>
-			<name>nexus-release</name>
-			<url>http://192.168.0.253:8081/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<url>http://192.168.0.253:8081/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -119,6 +105,21 @@
 	<profiles>
 		<profile>
 			<id>dev</id>
+			<properties>
+				<release.tarBase>http://192.168.0.253/svn/easypay/sys/tags</release.tarBase>
+				<release.branchBase>http://192.168.0.253/svn/easypay/sys/branches</release.branchBase>
+			</properties>
+			<distributionManagement>
+				<repository>
+					<id>release</id>
+					<name>nexus-release</name>
+					<url>http://192.168.0.253:8081/nexus/content/repositories/releases/</url>
+				</repository>
+				<snapshotRepository>
+					<id>snapshots</id>
+					<url>http://192.168.0.253:8081/nexus/content/repositories/snapshots/</url>
+				</snapshotRepository>
+			</distributionManagement>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
@@ -135,6 +136,21 @@
 		</profile>
 		<profile>
 			<id>test</id>
+			<properties>
+				<release.tarBase>http://45.32.88.84/svn/easypay/sys/tags</release.tarBase>
+				<release.branchBase>http://45.32.88.84/svn/easypay/sys/branches</release.branchBase>
+			</properties>
+			<distributionManagement>
+				<repository>
+					<id>release</id>
+					<name>nexus-release</name>
+					<url>http://45.32.88.84:8081/nexus/content/repositories/releases/</url>
+				</repository>
+				<snapshotRepository>
+					<id>snapshots</id>
+					<url>http://45.32.88.84:8081/nexus/content/repositories/snapshots/</url>
+				</snapshotRepository>
+			</distributionManagement>
 			<build>
 				<resources>
 					<resource>
@@ -148,6 +164,21 @@
 		</profile>
 		<profile>
 			<id>gray</id>
+			<properties>
+				<release.tarBase>http://45.32.88.84/svn/easypay/sys/tags</release.tarBase>
+				<release.branchBase>http://45.32.88.84/svn/easypay/sys/branches</release.branchBase>
+			</properties>
+			<distributionManagement>
+				<repository>
+					<id>release</id>
+					<name>nexus-release</name>
+					<url>http://45.32.88.84:8081/nexus/content/repositories/releases/</url>
+				</repository>
+				<snapshotRepository>
+					<id>snapshots</id>
+					<url>http://45.32.88.84:8081/nexus/content/repositories/snapshots/</url>
+				</snapshotRepository>
+			</distributionManagement>
 			<build>
 				<resources>
 					<resource>
@@ -161,6 +192,21 @@
 		</profile>
 		<profile>
 			<id>prod</id>
+			<properties>
+				<release.tarBase>http://45.32.88.84/svn/easypay/sys/tags</release.tarBase>
+				<release.branchBase>http://45.32.88.84/svn/easypay/sys/branches</release.branchBase>
+			</properties>
+			<distributionManagement>
+				<repository>
+					<id>release</id>
+					<name>nexus-release</name>
+					<url>http://45.32.88.84:8081/nexus/content/repositories/releases/</url>
+				</repository>
+				<snapshotRepository>
+					<id>snapshots</id>
+					<url>http://45.32.88.84:8081/nexus/content/repositories/snapshots/</url>
+				</snapshotRepository>
+			</distributionManagement>
 			<build>
 				<resources>
 					<resource>
