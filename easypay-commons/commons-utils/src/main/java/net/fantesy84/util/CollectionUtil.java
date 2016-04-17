@@ -187,6 +187,14 @@ public abstract class CollectionUtil {
 		return false;
 	}
 
+	public static <E> List<E> convert(List<?> source, Class<E> eleClass) {
+		List<E> list = new ArrayList<>();
+		for (Object obj : source) {
+			E e = eleClass.cast(obj);
+			list.add(e);
+		}
+		return list;
+	}
 	/**
 	 * Return the first element in '{@code candidates}' that is contained in
 	 * '{@code source}'. If no element in '{@code candidates}' is present in

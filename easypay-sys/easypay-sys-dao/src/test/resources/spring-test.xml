@@ -7,7 +7,8 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
 
-	<context:component-scan base-package="net.fantesy84.**.dao"/>
+	<context:property-placeholder location="classpath:application-test.properties"/>
+	<context:component-scan base-package="net.fantesy84.test;net.fantesy84.sys.**.dao"/>
 	<!-- Read only dataSource -->
 	<bean id="readDS01" class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">
 		<property name="uniqueResourceName" value="easypay/sys/read01"/>

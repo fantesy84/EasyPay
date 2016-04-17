@@ -10,6 +10,11 @@
 	<name>基础系统模型项目</name>
 	<dependencies>
 		<dependency>
+			<groupId>net.fantesy84</groupId>
+			<artifactId>commons-bean</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.hibernate.javax.persistence</groupId>
 			<artifactId>hibernate-jpa-2.1-api</artifactId>
 			<version>1.0.0.Final</version>

@@ -24,10 +24,13 @@
 	<description>通用包</description>
 
 	<modules>
-		<module>commons-dao</module>
+		
 		<module>commons-poi</module>
 		<module>commons-utils</module>
 		<module>commons-exception</module>
+		<module>commons-jdbc</module>
+		<module>commons-orm</module>
+		<module>commons-bean</module>
 	</modules>
 
 	<dependencyManagement>
