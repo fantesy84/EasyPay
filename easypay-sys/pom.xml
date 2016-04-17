@@ -11,7 +11,7 @@
 
 		<junit.version>4.12</junit.version>
 		<spring.version>4.2.5.RELEASE</spring.version>
-		<spring-data.version>1.7.1.RELEASE</spring-data.version>
+		<spring-data-release.version>Hopper-SR1</spring-data-release.version>
 		<spring-security.version>4.0.4.RELEASE</spring-security.version>
 		<atomikos.version>4.0.2</atomikos.version>
 		<jta.version>1.1</jta.version>
@@ -39,8 +39,10 @@
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.data</groupId>
-				<artifactId>spring-data-redis</artifactId>
-				<version>${spring-data.version}</version>
+				<artifactId>spring-data-releasetrain</artifactId>
+				<version>${spring-data-release.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.security</groupId>
