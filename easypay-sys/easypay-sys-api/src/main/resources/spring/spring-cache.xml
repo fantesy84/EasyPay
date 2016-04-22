@@ -34,7 +34,7 @@
 		<constructor-arg name="redisOperations" ref="redisTemplate"/>
 		<constructor-arg name="cacheNames">
 			<set>
-				<value>DIC</value>
+				<value>DICT</value>
 			</set>
 		</constructor-arg>
 		<property name="defaultExpiration" value="${redis.expire_time}"/>
