@@ -21,4 +21,8 @@ target
 #SVN
 .svn
 
+#Spring tools
 easypay-sys/easypay-sys-api/.springBeans
+
+#Intellij IDEA
+.idea
