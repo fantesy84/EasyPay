@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public final class BaseRequestDTO<T> implements Serializable{
 	private static final long serialVersionUID = 1L;
-	private Integer size;
+	private Integer size = 10;
 	private Integer index = 1;
 	private T paramBean;
 	
