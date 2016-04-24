@@ -27,3 +27,4 @@ easypay-sys/easypay-sys-api/.springBeans
 #Intellij IDEA
 .idea
 *.iml
+.tern-project
