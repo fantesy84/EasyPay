@@ -1,0 +1,69 @@
+Linux下安装SVN Linux下安装SVN可视化管理工具
+
+一、安装Apache
+通常系统都已经装好了：
+yum install httpd
+
+二、安装SVN
+根据SVN官网指南使用yum进行安装：
+yum install subversion mod_dav_svn
+
+三、配置SVN
+装完SVN后默认生成/etc/httpd/conf.d/subversion.conf文件
+vim /etc/httpd/conf.d/subversion.conf
+
+修改为以下：
+<Location /svn>
+	DAV svn
+	SVNParentPath /var/www/svn
+	AuthType Basic
+	AuthName "Authorization Realm"
+	AuthUserFile /var/www/svnconfig/passwd
+	AuthzSVNAccessFile /var/www/svnconfig/authz
+	Require valid-user
+</Location>
+
+四、创建SVN repo目录和权限信息目录
+mkdir /var/www/svn
+mkdir /var/www/svnconfig
+五、创建SVN权限文件和密码文件
+touch /var/www/svnconfig/authz
+touch /var/www/svnconfig/passwd
+
+六、安装php
+由于新版svnadmin需要php5.3以上,看了一下centos7的默认repo,刚好在5.3,所以直接使用yum安装.
+yum install php
+
+七、安装iF.SVnAdmin
+官方主页: http://svnadmin.insanefactory.com/  因为sourceforge.net被墙,所以要搭个梯子.你懂的......下好了之后,ftp上传到服务器.
+好了之后解压.
+unzip svnadmin-1.6.2.zip
+cp -r iF.SVNAdmin-stable-1.6.2/ /var/www/html/svnadmin
+chmod -R 777 /var/www/html/svnadmin/data/  
+chown -R apache:apache /var/www/html/svnadmin/
+chmod 777 /var/www/svnconfig/authz
+chmod 777 /var/www/svnconfig/passwd
+
+之后,启动apache
+systemctl start httpd
+如果已经启动了.那就重新启动下:
+systemctl restart httpd
+
+八、使用浏览器进入图形管理页面
+地址: http://192.168.xxx.xxx/svnadmin
+进来之后,直接进入配置页面,如果要输入用户名和密码的话,默认是admin,admin
+选择中文界面(右上角)
+1.Subversion 授权文件:
+	/var/www/svnconfig/authz
+2.用户身份验证文件 (SVNUserFile):
+	/var/www/svnconfig/passwd
+3.代码仓库的父目录 (SVNParentPath):
+	/var/www/svn
+4.'svn.exe' 或 'svn'可执行文件：
+	/usr/bin/svn
+5.'svnadmin.exe' 或 'svnadmin' 可执行文件：
+	/usr/bin/svnadmin
+
+然后点保存设置.左下角
+
+最后就是你自己配置仓库啊,用户啊,用户组啊,权限什么的.不用我教了吧.

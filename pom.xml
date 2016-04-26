@@ -16,6 +16,8 @@
 		<module>easypay-gateway</module>
 		<module>easypay-res</module>
 		<module>easypay-sys</module>
+		
+		<module>easypay-schedule</module>
 	</modules>
 	<issueManagement>
 		<url>https://github.com/fantesy84/EasyPay/issues</url>

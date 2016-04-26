@@ -6,6 +6,8 @@
  */
 package net.fantesy84.sys.jdbc.support;
 
+import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 
 /**
@@ -18,4 +20,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
  */
 public class JdbcWriteDaoSupportImpl extends NamedParameterJdbcDaoSupport implements JdbcWriteDaoSupport {
 	
+	public void setWriteDataSource(DataSource dataSource) {
+		super.setDataSource(dataSource);
+	}
 }
