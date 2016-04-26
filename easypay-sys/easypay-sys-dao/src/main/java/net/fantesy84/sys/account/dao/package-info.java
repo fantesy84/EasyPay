@@ -7,4 +7,4 @@
  * @author 葛俊杰
  *
  */
-package net.fantesy84.sys.customer.dao;
+package net.fantesy84.sys.account.dao;

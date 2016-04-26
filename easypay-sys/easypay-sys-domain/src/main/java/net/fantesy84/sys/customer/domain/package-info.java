@@ -1,10 +1,10 @@
 /**
  * Project: easypay-sys-domain
- * CreateTime: 2016年4月13日
- * Copyright ©2016 葛俊杰
+ * Created: 2016年4月26日
+ * Copyright ©2014-2016 葛俊杰
  */
 /**
- * @author Administrator
+ * @author 葛俊杰
  *
  */
 package net.fantesy84.sys.customer.domain;
