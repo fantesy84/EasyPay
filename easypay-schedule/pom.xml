@@ -54,6 +54,7 @@
 		<module>easypay-schedule-dao</module>
 		<module>easypay-schedule-biz</module>
 		<module>easypay-schedule-web</module>
+		<module>easypay-schedule-job</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
