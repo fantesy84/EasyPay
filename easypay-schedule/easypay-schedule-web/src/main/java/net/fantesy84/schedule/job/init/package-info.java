@@ -4,18 +4,12 @@
  * Creator: junjie.ge
  * Copyright ©2016 葛俊杰
  */
-package net.fantesy84.schedule.job.factory;
-
-import org.quartz.SchedulerException;
-
 /**
- * TypeName: EasypayScheduleJobLoader
+ * TypeName: package-info
  * 
  * <P>CreateTime: 2016年4月29日
  * <P>UpdateTime: 
  * @author junjie.ge
  *
  */
-public interface EasypayScheduleJobLoader {
-	public void reload() throws SchedulerException;
-}
+package net.fantesy84.schedule.job.init;

@@ -13,7 +13,7 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.fantesy84.quartz.domain.EpQuartzJobDetails;
+import net.fantesy84.easypay.job.domain.EpSysSchedulers;
 
 /**
  * TypeName: QuartzJobFactory
@@ -33,8 +33,8 @@ public class QuartzJobFactory implements Job {
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		logger.info("任务开始运行!");
-		EpQuartzJobDetails jobDetails = (EpQuartzJobDetails) context.getMergedJobDataMap().get(DEFAULT_JOB_KEY);
-		logger.info("任务名称={}", jobDetails.getId().getJobName());
+		EpSysSchedulers jobDetails = (EpSysSchedulers) context.getMergedJobDataMap().get(DEFAULT_JOB_KEY);
+		logger.info("任务名称={}", jobDetails.getJobName());
 	}
 
 }
