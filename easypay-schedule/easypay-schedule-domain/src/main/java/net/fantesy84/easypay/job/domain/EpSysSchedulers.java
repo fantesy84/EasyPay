@@ -159,5 +159,5 @@ public class EpSysSchedulers implements java.io.Serializable {
 	public void setDeleteFlag(Boolean deleteFlag) {
 		this.deleteFlag = deleteFlag;
 	}
-
+	
 }

@@ -8,11 +8,13 @@ package net.fantesy84.schedule.job.init;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,24 +49,36 @@ public class EasypaySchedulerJobLoaderImpl implements EasypayScheduleJobLoader {
 			Iterator<EpSysSchedulers> iterator = jobList.iterator();
 			while (iterator.hasNext()) {
 				EpSysSchedulers job = iterator.next();
+				// prepare an new Trigger for reload scheduler
+				Trigger newTrigger = null;
+				TriggerTypes type = Enum.valueOf(TriggerTypes.class, job.getTriggerType());
+				switch (type) {
+				case TRG_000:
+					// Simple trigger
+					break;
+				case TRG_001:
+					// Simple properties trigger
+					break;
+				case TRG_003:
+					// Blob trigger
+					break;
+
+				default:
+					// Use corn trigger default. As Enum TriggerTypes is TRG_002
+					CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder
+							.cronSchedule(job.getTriggerExpression());
+					newTrigger = TriggerBuilder.newTrigger().withIdentity(job.getJobName(), job.getJobGroup())
+							.withSchedule(cronScheduleBuilder).build();
+					break;
+				}
 				TriggerKey triggerKey = TriggerKey.triggerKey(job.getTriggerName(), job.getTriggerGroup());
-				Trigger trigger = scheduler.getTrigger(triggerKey);
-				if (trigger == null) {
+				if (!(scheduler.checkExists(triggerKey))) {
 					JobDetail jobDetail = JobBuilder.newJob(QuartzJobFactory.class)
 							.withIdentity(job.getJobName(), job.getJobGroup()).build();
 					jobDetail.getJobDataMap().put(QuartzJobFactory.DEFAULT_JOB_KEY, job);
-					String triggerType = job.getTriggerType();
-					TriggerTypes type = TriggerTypes.SIMPLE;
-					switch (type) {
-					case SIMPLE:
-						
-						break;
-
-					default:
-						break;
-					}
+					scheduler.scheduleJob(jobDetail, newTrigger);
 				} else {
-
+					scheduler.rescheduleJob(triggerKey, newTrigger);
 				}
 			}
 		} else {

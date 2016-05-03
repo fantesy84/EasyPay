@@ -13,22 +13,21 @@ package net.fantesy84.schedule.job.factory;
  *
  */
 public enum TriggerTypes {
-	SIMPLE("TRG_000"), SIMPLE_PROPERTIES("TRG_001"), CRON("TRG_002"), BLOB("TRG_003");
-	
-	private String dictCode;
+	TRG_000("simple"),TRG_001("simple_properties"),TRG_002("cron"),TRG_003("blob");
+	private String type;
 
 	/**
-	 * @param dictCode
+	 * @param type
 	 */
-	private TriggerTypes(String dictCode) {
-		this.dictCode = dictCode;
+	private TriggerTypes(String type) {
+		this.type = type;
 	}
 
 	/**
-	 * @return the dictCode
+	 * @return the type
 	 */
-	public String getDictCode() {
-		return dictCode;
+	public String getType() {
+		return type;
 	}
 	
 }
