@@ -4,12 +4,18 @@
  * Creator: junjie.ge
  * Copyright ©2016 葛俊杰
  */
+package net.fantesy84.schedule.job.factory;
+
+import net.fantesy84.exception.EasypayException;
+
 /**
- * TypeName: package-info
+ * TypeName: EasypayScheduleJobLoader
  * 
  * <P>CreateTime: 2016年4月29日
  * <P>UpdateTime: 
  * @author junjie.ge
  *
  */
-package net.fantesy84.schedule.job.init;
+public interface ScheduleJobLoader {
+	public void reload() throws EasypayException;
+}

@@ -13,7 +13,22 @@ package net.fantesy84.schedule.job.factory;
  *
  */
 public enum TriggerTypes {
-	TRG_000("simple"),TRG_001("simple_properties"),TRG_002("cron"),TRG_003("blob");
+	/**
+	 * Trigger type: simple
+	 */
+	TRG_000("simple"),
+	/**
+	 * Trigger type: simple_properties
+	 */
+	TRG_001("simple_properties"),
+	/**
+	 * Trigger type: cron
+	 */
+	TRG_002("cron"),
+	/**
+	 * Trigger type: blob
+	 */
+	TRG_003("blob");
 	private String type;
 
 	/**

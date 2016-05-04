@@ -13,6 +13,7 @@ import org.quartz.CronScheduleBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
@@ -58,8 +59,8 @@ public class QuartzDynamicTrigger implements DynamicTrigger {
 	 * String)
 	 */
 	@Override
-	public void schedule(String cornExpression) throws EasypayException {
-		schedule(null, cornExpression);
+	public void schedule(String cronExpression) throws EasypayException {
+		schedule(null, cronExpression);
 	}
 
 	/*
@@ -70,8 +71,8 @@ public class QuartzDynamicTrigger implements DynamicTrigger {
 	 * String, java.lang.String)
 	 */
 	@Override
-	public void schedule(String triggerName, String cornExpression) throws EasypayException {
-		schedule(triggerName, null, cornExpression);
+	public void schedule(String triggerName, String cronExpression) throws EasypayException {
+		schedule(triggerName, null, cronExpression);
 	}
 
 	/*
@@ -82,16 +83,16 @@ public class QuartzDynamicTrigger implements DynamicTrigger {
 	 * String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void schedule(String triggerName, String triggerGroup, String cornExpression) throws EasypayException {
+	public void schedule(String triggerName, String triggerGroup, String cronExpression) throws EasypayException {
 		try {
-			CronExpression cronExpression = new CronExpression(cornExpression);
+			CronExpression expression = new CronExpression(cronExpression);
 			TriggerKey triggerKey = null;
 			if (triggerName == null || triggerName.trim().length() == 0) {
 				triggerName = Key.createUniqueName(triggerGroup);
 			}
 			triggerKey = TriggerKey.triggerKey(triggerName, triggerGroup);
 			Trigger newTrigger = TriggerBuilder.newTrigger().withIdentity(triggerName, triggerGroup)
-					.withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)).build();
+					.withSchedule(CronScheduleBuilder.cronSchedule(expression)).build();
 			if (scheduler.checkExists(triggerKey)) {
 				scheduler.rescheduleJob(triggerKey, newTrigger);
 			} else {
@@ -137,7 +138,7 @@ public class QuartzDynamicTrigger implements DynamicTrigger {
 	 */
 	@Override
 	public void schedule(String triggerName, String triggerGroup, Date fireTime) throws EasypayException {
-		schedule(triggerName, triggerGroup, 0L, fireTime);
+		schedule(triggerName, triggerGroup, fireTime, null);
 	}
 
 	/*
@@ -148,22 +149,8 @@ public class QuartzDynamicTrigger implements DynamicTrigger {
 	 * String, java.lang.String, java.lang.Long, java.util.Date)
 	 */
 	@Override
-	public void schedule(String triggerName, String triggerGroup, Long timeout, Date fireTime) throws EasypayException {
-		schedule(triggerName, triggerGroup, timeout, 0, fireTime);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * net.fantesy84.schedule.generic.biz.DynamicScheduler#schedule(java.lang.
-	 * String, java.lang.String, java.lang.Long, java.lang.Integer,
-	 * java.util.Date)
-	 */
-	@Override
-	public void schedule(String triggerName, String triggerGroup, Long timeout, Integer repeat, Date fireTime)
-			throws EasypayException {
-		schedule(triggerName, triggerGroup, timeout, repeat, 0L, fireTime);
+	public void schedule(String triggerName, String triggerGroup, Date fireTime, Date endTime) throws EasypayException {
+		schedule(triggerName, triggerGroup, fireTime, endTime, 0, 0L);
 	}
 
 	/*
@@ -175,14 +162,37 @@ public class QuartzDynamicTrigger implements DynamicTrigger {
 	 * java.lang.Long, java.util.Date)
 	 */
 	@Override
-	public void schedule(String triggerName, String triggerGroup, Long timeout, Integer repeat, Long repeatInterval,
-			Date fireTime) throws EasypayException {
-		// TODO Auto-generated method stub
+	public void schedule(String triggerName, String triggerGroup, Date fireTime, Date endTime, Integer repeat, Long repeatInterval) throws EasypayException {
 		TriggerKey triggerKey = null;
 		if (triggerName == null || triggerName.trim().length() == 0) {
 			triggerName = Key.createUniqueName(triggerGroup);
 		}
 		triggerKey = TriggerKey.triggerKey(triggerName, triggerGroup);
+		SimpleScheduleBuilder scheduleBuilder = null;
+		if (repeat > 0) {
+			if (repeatInterval != null && repeatInterval.longValue() > 0) {
+				int intervalSeconds = (int) (repeatInterval/1000);
+				scheduleBuilder = SimpleScheduleBuilder.repeatSecondlyForever(intervalSeconds);
+			}
+		}
+		TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger().withIdentity(triggerName, triggerGroup);
+		if (scheduleBuilder != null) {
+			triggerBuilder.withSchedule(scheduleBuilder);
+		}
+		triggerBuilder.startAt(fireTime);
+		if (endTime != null) {
+			triggerBuilder.endAt(endTime);
+		}
+		Trigger newTrigger = triggerBuilder.build();
+		try {
+			if (scheduler.checkExists(triggerKey)) {
+				scheduler.rescheduleJob(triggerKey, newTrigger);
+			} else {
+				scheduler.scheduleJob(jobDetail, newTrigger);
+			}
+		} catch (Exception e) {
+			throw new EasypayException(e);
+		}
 	}
 
 	/*
@@ -193,8 +203,7 @@ public class QuartzDynamicTrigger implements DynamicTrigger {
 	 */
 	@Override
 	public void pause(String triggerName) throws EasypayException {
-		// TODO Auto-generated method stub
-
+		pause(triggerName, null);
 	}
 
 	/*
@@ -205,8 +214,11 @@ public class QuartzDynamicTrigger implements DynamicTrigger {
 	 */
 	@Override
 	public void pause(String triggerName, String triggerGroup) throws EasypayException {
-		// TODO Auto-generated method stub
-
+		try {
+			scheduler.pauseTrigger(TriggerKey.triggerKey(triggerName, triggerGroup));
+		} catch (SchedulerException e) {
+			throw new EasypayException(e);
+		}
 	}
 
 	/*
@@ -218,8 +230,7 @@ public class QuartzDynamicTrigger implements DynamicTrigger {
 	 */
 	@Override
 	public void resume(String triggerName) throws EasypayException {
-		// TODO Auto-generated method stub
-
+		resume(triggerName, null);
 	}
 
 	/*
@@ -231,34 +242,11 @@ public class QuartzDynamicTrigger implements DynamicTrigger {
 	 */
 	@Override
 	public void resume(String triggerName, String triggerGroup) throws EasypayException {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * net.fantesy84.schedule.generic.biz.DynamicScheduler#remove(java.lang.
-	 * String)
-	 */
-	@Override
-	public void remove(String triggerName) throws EasypayException {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * net.fantesy84.schedule.generic.biz.DynamicScheduler#remove(java.lang.
-	 * String, java.lang.String)
-	 */
-	@Override
-	public void remove(String triggerName, String triggerGroup) throws EasypayException {
-		// TODO Auto-generated method stub
-
+		try {
+			scheduler.resumeTrigger(TriggerKey.triggerKey(triggerName, triggerGroup));
+		} catch (SchedulerException e) {
+			throw new EasypayException(e);
+		}
 	}
 
 }

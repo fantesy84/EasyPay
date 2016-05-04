@@ -3,27 +3,23 @@
  * Created: 2016年4月29日
  * Copyright ©2016 葛俊杰
  */
-package net.fantesy84.schedule.job.init;
+package net.fantesy84.schedule.job.factory;
 
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import net.fantesy84.easypay.job.domain.EpSysSchedulers;
-import net.fantesy84.schedule.job.factory.EasypayScheduleJobLoader;
-import net.fantesy84.schedule.job.factory.QuartzJobFactory;
-import net.fantesy84.schedule.job.factory.TriggerTypes;
+import net.fantesy84.exception.EasypayException;
 
 /**
  * Description:
@@ -32,19 +28,18 @@ import net.fantesy84.schedule.job.factory.TriggerTypes;
  * @author 葛俊杰
  *
  */
-public class EasypaySchedulerJobLoaderImpl implements EasypayScheduleJobLoader {
-	private static final Logger logger = LoggerFactory.getLogger(EasypaySchedulerJobLoaderImpl.class);
-	private SchedulerFactoryBean schedulerFactoryBean;
-	private Collection<EpSysSchedulers> jobList;
-
+public class EasypaySchedulerJobLoader implements ScheduleJobLoader {
+	private static final Logger logger = LoggerFactory.getLogger(EasypaySchedulerJobLoader.class);
+	private Scheduler scheduler;
+	private JobFactory jobFactory;
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see net.fantesy84.schedule.job.factory.EasypayScheduleJobLoader#load()
 	 */
 	@Override
-	public void reload() throws SchedulerException {
-		Scheduler scheduler = schedulerFactoryBean.getScheduler();
+	public void reload() throws EasypayException {
+		List<EpSysSchedulers> jobList = jobFactory.getJobs();
 		if (jobList != null && jobList.size() > 0) {
 			Iterator<EpSysSchedulers> iterator = jobList.iterator();
 			while (iterator.hasNext()) {
@@ -72,13 +67,17 @@ public class EasypaySchedulerJobLoaderImpl implements EasypayScheduleJobLoader {
 					break;
 				}
 				TriggerKey triggerKey = TriggerKey.triggerKey(job.getTriggerName(), job.getTriggerGroup());
-				if (!(scheduler.checkExists(triggerKey))) {
-					JobDetail jobDetail = JobBuilder.newJob(QuartzJobFactory.class)
-							.withIdentity(job.getJobName(), job.getJobGroup()).build();
-					jobDetail.getJobDataMap().put(QuartzJobFactory.DEFAULT_JOB_KEY, job);
-					scheduler.scheduleJob(jobDetail, newTrigger);
-				} else {
-					scheduler.rescheduleJob(triggerKey, newTrigger);
+				try {
+					if (!(scheduler.checkExists(triggerKey))) {
+						JobDetail jobDetail = JobBuilder.newJob(QuartzJob.class)
+								.withIdentity(job.getJobName(), job.getJobGroup()).build();
+						jobDetail.getJobDataMap().put(QuartzJob.DEFAULT_JOB_KEY, job);
+						scheduler.scheduleJob(jobDetail, newTrigger);
+					} else {
+						scheduler.rescheduleJob(triggerKey, newTrigger);
+					}
+				} catch (Exception e) {
+					throw new EasypayException(e);
 				}
 			}
 		} else {
@@ -86,27 +85,18 @@ public class EasypaySchedulerJobLoaderImpl implements EasypayScheduleJobLoader {
 		}
 	}
 
+	
 	/**
-	 * @param schedulerFactoryBean
-	 *            the schedulerFactoryBean to set
+	 * @param scheduler the scheduler to set
 	 */
-	public void setSchedulerFactoryBean(SchedulerFactoryBean schedulerFactoryBean) {
-		this.schedulerFactoryBean = schedulerFactoryBean;
+	public void setScheduler(Scheduler scheduler) {
+		this.scheduler = scheduler;
 	}
-
 	/**
-	 * @return the jobList
+	 * @param jobFactory the jobFactory to set
 	 */
-	public Collection<EpSysSchedulers> getJobList() {
-		return jobList;
-	}
-
-	/**
-	 * @param jobList
-	 *            the jobList to set
-	 */
-	public void setJobList(Collection<EpSysSchedulers> jobList) {
-		this.jobList = jobList;
+	public void setJobFactory(JobFactory jobFactory) {
+		this.jobFactory = jobFactory;
 	}
 
 }

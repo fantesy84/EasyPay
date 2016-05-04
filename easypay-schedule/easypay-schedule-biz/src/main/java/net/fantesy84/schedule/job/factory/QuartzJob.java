@@ -24,8 +24,8 @@ import net.fantesy84.easypay.job.domain.EpSysSchedulers;
  *
  */
 @DisallowConcurrentExecution
-public class QuartzJobFactory implements Job {
-	private static final Logger logger = LoggerFactory.getLogger(QuartzJobFactory.class);
+public class QuartzJob implements Job {
+	private static final Logger logger = LoggerFactory.getLogger(QuartzJob.class);
 	public static final String DEFAULT_JOB_KEY = "easypay-schedule";
 	/* (non-Javadoc)
 	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
