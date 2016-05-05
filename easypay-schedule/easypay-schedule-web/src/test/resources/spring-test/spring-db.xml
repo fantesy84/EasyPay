@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+
+	<context:component-scan base-package="net.fantesy84.**.dao" />
+	<!-- DataSource config -->
+	<bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+		<property name="driverClass" value="${jdbc.driver.classname}" />
+		<property name="jdbcUrl" value="${datasource.url}" />
+		<property name="username" value="${datasource.user}" />
+		<property name="password" value="${datasource.passwd}" />
+		<property name="idleConnectionTestPeriodInMinutes" value="${datasource.pool.connection.idle.test.time}" />
+		<property name="idleMaxAgeInMinutes" value="${datasource.pool.connection.idle.maxAge.time}" />
+		<property name="partitionCount" value="${datasource.pool.connection.partition}" />
+		<property name="minConnectionsPerPartition" value="${datasource.pool.connection.partition.min}" />
+		<property name="maxConnectionsPerPartition" value="${datasource.pool.connection.partition.max}" />
+		<property name="acquireIncrement" value="${datasource.pool.connection.acquireIncrement}" />
+		<property name="statementsCacheSize" value="${datasource.pool.connection.statement.cacheSize}" />
+	</bean>
+	<!-- Hibernate config -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="packagesToScan">
+			<list>
+				<value>net.fantesy84.**.domain</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- Hibernate DAO template -->
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+	<!-- TransactionManager config -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>

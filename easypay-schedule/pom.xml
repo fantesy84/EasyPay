@@ -35,10 +35,10 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
+
 		<junit.version>4.12</junit.version>
 		<spring.version>4.2.5.RELEASE</spring.version>
 		<mysql.driver.version>5.1.38</mysql.driver.version>
@@ -48,13 +48,15 @@
 		<logback.version>1.1.7</logback.version>
 		<jackson.version>2.6.5</jackson.version>
 		<quartz.version>2.2.3</quartz.version>
+		<hessian.version>4.0.38</hessian.version>
 	</properties>
 	<modules>
 		<module>easypay-schedule-domain</module>
 		<module>easypay-schedule-dao</module>
 		<module>easypay-schedule-biz</module>
 		<module>easypay-schedule-web</module>
-		<module>easypay-schedule-job</module>
+
+		<module>easypay-schedule-api</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
@@ -116,6 +118,11 @@
 				<artifactId>quartz-jobs</artifactId>
 				<version>${quartz.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.caucho</groupId>
+				<artifactId>hessian</artifactId>
+				<version>${hessian.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<profiles>
@@ -174,5 +181,5 @@
 				</resources>
 			</build>
 		</profile>
-	</profiles>	
+	</profiles>
 </project>
