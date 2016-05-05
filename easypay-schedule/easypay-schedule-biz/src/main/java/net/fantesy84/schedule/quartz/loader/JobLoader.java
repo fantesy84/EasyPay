@@ -4,7 +4,7 @@
  * Creator: junjie.ge
  * Copyright ©2016 葛俊杰
  */
-package net.fantesy84.schedule.job.factory;
+package net.fantesy84.schedule.quartz.loader;
 
 import net.fantesy84.exception.EasypayException;
 
@@ -16,6 +16,6 @@ import net.fantesy84.exception.EasypayException;
  * @author junjie.ge
  *
  */
-public interface ScheduleJobLoader {
+public interface JobLoader {
 	public void reload() throws EasypayException;
 }

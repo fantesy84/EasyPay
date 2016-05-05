@@ -3,7 +3,7 @@
  * Created: 2016年4月29日
  * Copyright ©2016 葛俊杰
  */
-package net.fantesy84.schedule.job.factory;
+package net.fantesy84.schedule.quartz.loader;
 
 import java.util.Iterator;
 import java.util.List;
@@ -17,9 +17,13 @@ import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import net.fantesy84.easypay.job.domain.EpSysSchedulers;
 import net.fantesy84.exception.EasypayException;
+import net.fantesy84.schedule.quartz.factory.JobDetailBuilder;
+import net.fantesy84.schedule.quartz.job.AbstractQuartzJob;
 
 /**
  * Description:
@@ -28,10 +32,11 @@ import net.fantesy84.exception.EasypayException;
  * @author 葛俊杰
  *
  */
-public class EasypaySchedulerJobLoader implements ScheduleJobLoader {
-	private static final Logger logger = LoggerFactory.getLogger(EasypaySchedulerJobLoader.class);
+@Component
+public class SchedulerJobLoader implements JobLoader {
+	private static final Logger logger = LoggerFactory.getLogger(SchedulerJobLoader.class);
 	private Scheduler scheduler;
-	private JobFactory jobFactory;
+	private JobDetailBuilder jobFactory;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -69,9 +74,9 @@ public class EasypaySchedulerJobLoader implements ScheduleJobLoader {
 				TriggerKey triggerKey = TriggerKey.triggerKey(job.getTriggerName(), job.getTriggerGroup());
 				try {
 					if (!(scheduler.checkExists(triggerKey))) {
-						JobDetail jobDetail = JobBuilder.newJob(QuartzJob.class)
+						JobDetail jobDetail = JobBuilder.newJob(AbstractQuartzJob.class)
 								.withIdentity(job.getJobName(), job.getJobGroup()).build();
-						jobDetail.getJobDataMap().put(QuartzJob.DEFAULT_JOB_KEY, job);
+						jobDetail.getJobDataMap().put(AbstractQuartzJob.DEFAULT_JOB_KEY, job);
 						scheduler.scheduleJob(jobDetail, newTrigger);
 					} else {
 						scheduler.rescheduleJob(triggerKey, newTrigger);
@@ -89,13 +94,15 @@ public class EasypaySchedulerJobLoader implements ScheduleJobLoader {
 	/**
 	 * @param scheduler the scheduler to set
 	 */
+	@Autowired
 	public void setScheduler(Scheduler scheduler) {
 		this.scheduler = scheduler;
 	}
 	/**
 	 * @param jobFactory the jobFactory to set
 	 */
-	public void setJobFactory(JobFactory jobFactory) {
+	@Autowired
+	public void setJobFactory(JobDetailBuilder jobFactory) {
 		this.jobFactory = jobFactory;
 	}
 

@@ -4,7 +4,7 @@
  * Creator: junjie.ge
  * Copyright ©2016 葛俊杰
  */
-package net.fantesy84.schedule.job.factory;
+package net.fantesy84.schedule.quartz.job;
 
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
@@ -24,8 +24,8 @@ import net.fantesy84.easypay.job.domain.EpSysSchedulers;
  *
  */
 @DisallowConcurrentExecution
-public class QuartzJob implements Job {
-	private static final Logger logger = LoggerFactory.getLogger(QuartzJob.class);
+public class AbstractQuartzJob implements Job {
+	private static final Logger logger = LoggerFactory.getLogger(AbstractQuartzJob.class);
 	public static final String DEFAULT_JOB_KEY = "easypay-schedule";
 	/* (non-Javadoc)
 	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)

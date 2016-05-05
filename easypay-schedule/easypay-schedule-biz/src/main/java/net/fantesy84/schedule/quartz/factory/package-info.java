@@ -12,4 +12,4 @@
  * @author junjie.ge
  *
  */
-package net.fantesy84.schedule.job.factory;
+package net.fantesy84.schedule.quartz.factory;

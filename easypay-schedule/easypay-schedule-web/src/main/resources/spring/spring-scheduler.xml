@@ -5,28 +5,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 
-	<context:component-scan base-package="net.fantesy84.scheduler.job"/>
-	<bean id="schedulerDataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
-		<property name="driverClass" value="${jdbc.driver.classname}" />
-		<property name="jdbcUrl" value="${datasource.url}" />
-		<property name="username" value="${datasource.user}" />
-		<property name="password" value="${datasource.passwd}" />
-		<property name="partitionCount" value="2" />
-		<property name="minConnectionsPerPartition" value="1" />
-		<property name="maxConnectionsPerPartition" value="10" />
-		<property name="acquireIncrement" value="2" />
-		<property name="statementsCacheSize" value="100" />
-	</bean>
+	<context:component-scan base-package="net.fantesy84.scheduler.*.biz"/>
 	
-	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="true">
-		<property name="dataSource" ref="schedulerDataSource" />
-		<property name="applicationContextSchedulerContextKey" value="applicationContextKey" />
-		<property name="autoStartup" value="true" />
-		<property name="configLocation" value="classpath:quartz.properties"/>
-	</bean>
-	<bean id="quartzJobFactory" class="net.fantesy84.schedule.job.factory.QuartzJobFactory"></bean>
-	<bean id="schedulerLoader" class="net.fantesy84.schedule.job.factory.EasypaySchedulerJobLoader" init-method="reload">
-		<property name="scheduler" ref="scheduler"/>
-		<property name="jobFactory" ref="quartzJobFactory"/>
-	</bean>
 </beans>

@@ -3,13 +3,11 @@
  * Created: 2016年5月3日
  * Copyright ©2016 葛俊杰
  */
-package net.fantesy84.schedule.quartz.biz;
+package net.fantesy84.schedule.generic.biz;
 
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
-
-import net.fantesy84.schedule.generic.biz.DynamicTrigger;
 
 /**
  * Description:

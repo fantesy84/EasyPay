@@ -3,7 +3,7 @@
  * Created: 2016年5月3日
  * Copyright ©2016 葛俊杰
  */
-package net.fantesy84.schedule.quartz.biz;
+package net.fantesy84.schedule.generic.biz;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -20,7 +20,6 @@ import org.quartz.TriggerKey;
 import org.quartz.utils.Key;
 
 import net.fantesy84.exception.EasypayException;
-import net.fantesy84.schedule.generic.biz.DynamicTrigger;
 
 /**
  * Description:

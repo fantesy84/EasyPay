@@ -3,7 +3,7 @@
  * Created: 2016年5月4日
  * ©gopay.com Inc.
  */
-package net.fantesy84.schedule.job.factory;
+package net.fantesy84.schedule.quartz.factory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import net.fantesy84.exception.EasypayException;
  * @author junjie.ge
  * @since JDK1.7
  */
-public abstract class AbstractJobFactory implements JobFactory {
+public abstract class AbstractJobDetailBuilder implements JobDetailBuilder {
 	private CopyOnWriteArrayList<EpSysSchedulers> jobs = new CopyOnWriteArrayList<>();
 	
 	/* (non-Javadoc)
@@ -37,5 +37,4 @@ public abstract class AbstractJobFactory implements JobFactory {
 		jobs.add(job);
 	}
 	
-	public abstract void buildJobs(String json) throws EasypayException;
 }

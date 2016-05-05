@@ -26,38 +26,7 @@ public class EpSysSchedulers implements java.io.Serializable {
 	private Date updateTime;
 	private Boolean deleteFlag;
 
-	public EpSysSchedulers() {
-	}
-
-	public EpSysSchedulers(String scheduleName, String jobName, String jobGroup, String triggerName,
-			String triggerGroup, String triggerType, String triggerExpression, Date createTime) {
-		this.scheduleName = scheduleName;
-		this.jobName = jobName;
-		this.jobGroup = jobGroup;
-		this.triggerName = triggerName;
-		this.triggerGroup = triggerGroup;
-		this.triggerType = triggerType;
-		this.triggerExpression = triggerExpression;
-		this.createTime = createTime;
-	}
-
-	public EpSysSchedulers(String scheduleName, String jobName, String jobGroup, String triggerName,
-			String triggerGroup, String triggerType, String triggerExpression, Date createTime, Date updateTime,
-			Boolean deleteFlag) {
-		this.scheduleName = scheduleName;
-		this.jobName = jobName;
-		this.jobGroup = jobGroup;
-		this.triggerName = triggerName;
-		this.triggerGroup = triggerGroup;
-		this.triggerType = triggerType;
-		this.triggerExpression = triggerExpression;
-		this.createTime = createTime;
-		this.updateTime = updateTime;
-		this.deleteFlag = deleteFlag;
-	}
-
 	@Id
-
 	@Column(name = "SCHEDULE_NAME", unique = true, nullable = false, length = 120)
 	public String getScheduleName() {
 		return this.scheduleName;

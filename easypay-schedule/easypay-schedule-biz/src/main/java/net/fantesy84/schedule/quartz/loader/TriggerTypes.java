@@ -3,7 +3,7 @@
  * Created: 2016年4月29日
  * Copyright ©2016 葛俊杰
  */
-package net.fantesy84.schedule.job.factory;
+package net.fantesy84.schedule.quartz.loader;
 
 /**
  * Description:
