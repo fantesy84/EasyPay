@@ -12,7 +12,7 @@ import javax.persistence.Version;
 
 @Entity
 @Table(name = "EP_SYS_SCHEDULERS", catalog = "EASY_PAY")
-public class EpSysSchedulers implements java.io.Serializable {
+public class JobConfigBean implements java.io.Serializable {
 	private static final long serialVersionUID = 4142293657938927105L;
 	private String scheduleName;
 	private int version;

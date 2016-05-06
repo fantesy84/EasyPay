@@ -1,6 +1,6 @@
 /**
- * Project: easypay-schedule-api
- * Created: 2016年5月5日
+ * Project: easypay-schedule-domain
+ * Created: 2016年5月6日
  * ©gopay.com Inc.
  */
 /**
@@ -9,4 +9,4 @@
  * @author junjie.ge
  * @since JDK1.7
  */
-package net.fantesy84.schedule.api;
+package net.fantesy84.quartz.domain.job;

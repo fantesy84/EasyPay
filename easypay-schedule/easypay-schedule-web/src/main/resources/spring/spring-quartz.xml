@@ -22,6 +22,6 @@
 		<property name="dataSource" ref="schedulerDataSource" />
 		<property name="applicationContextSchedulerContextKey" value="applicationContextKey" />
 		<property name="autoStartup" value="true" />
-		<property name="configLocation" value="classpath:quartz-test.properties"/>
+		<property name="configLocation" value="classpath:quartz.properties"/>
 	</bean>
 </beans>
