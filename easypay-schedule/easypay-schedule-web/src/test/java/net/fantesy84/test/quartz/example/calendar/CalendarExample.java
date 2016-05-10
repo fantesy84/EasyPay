@@ -14,22 +14,25 @@
  * under the License.
  * 
  */
- 
+
 package net.fantesy84.test.quartz.example.calendar;
 
-import static org.quartz.DateBuilder.dateOf;
 import static org.quartz.JobBuilder.newJob;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
-import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.UUID;
 
+import org.quartz.CronScheduleBuilder;
+import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.ScheduleBuilder;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerMetaData;
-import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
 import org.quartz.impl.calendar.AnnualCalendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,88 +40,72 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * This example will demonstrate how calendars can be used to exclude periods of time when scheduling should not take
- * place.
+ * This example will demonstrate how calendars can be used to exclude periods of
+ * time when scheduling should not take place.
  */
 public class CalendarExample {
 
-  public void run() throws Exception {
-    final Logger log = LoggerFactory.getLogger(CalendarExample.class);
+	public void run() throws Exception {
+		final Logger log = LoggerFactory.getLogger(CalendarExample.class);
 
-    log.info("------- Initializing ----------------------");
+		log.info("------- Initializing ----------------------");
 
-    @SuppressWarnings("resource")
-	ApplicationContext ac = new ClassPathXmlApplicationContext("spring-test.xml");
-	Scheduler sched = (Scheduler) ac.getBean("scheduler");
+		@SuppressWarnings("resource")
+		ApplicationContext ac = new ClassPathXmlApplicationContext("spring-test.xml");
+		Scheduler sched = (Scheduler) ac.getBean("scheduler");
 
-    log.info("------- Initialization Complete -----------");
+		log.info("------- Initialization Complete -----------");
 
-    log.info("------- Scheduling Jobs -------------------");
+		log.info("------- Scheduling Jobs -------------------");
 
-    // Add the holiday calendar to the schedule
-    AnnualCalendar holidays = new AnnualCalendar();
+		// Add the holiday calendar to the schedule
+		AnnualCalendar holidays = new AnnualCalendar();
 
-    // fourth of July (July 4)
-    Calendar fourthOfJuly = new GregorianCalendar(2005, 6, 4);
-    holidays.setDayExcluded(fourthOfJuly, true);
-    // halloween (Oct 31)
-    Calendar halloween = new GregorianCalendar(2005, 9, 31);
-    holidays.setDayExcluded(halloween, true);
-    // christmas (Dec 25)
-    Calendar christmas = new GregorianCalendar(2005, 11, 25);
-    holidays.setDayExcluded(christmas, true);
+		// fourth of July (July 4)
+		Calendar myHoliday = new GregorianCalendar(2016, 5, 9);
+		holidays.setDayExcluded(myHoliday, true);
+		String calendarName = "HolidaysCalendar_" + UUID.randomUUID().toString().substring(0, 32);
 
-    // tell the schedule about our holiday calendar
-    sched.addCalendar("holidays", holidays, false, false);
+		// tell the schedule about our holiday calendar
+		sched.addCalendar(calendarName, holidays, false, false);
 
-    // schedule a job to run hourly, starting on halloween
-    // at 10 am
-    Date runDate = dateOf(0, 0, 10, 31, 10);
+		String jobGroup = "calendar_test_job_group";
+		String triggerGroup = "calendar_test_trigger_group";
+		JobDetail job = newJob(SimpleJob.class).withIdentity(JobKey.createUniqueName(jobGroup), jobGroup).build();
+		ScheduleBuilder<CronTrigger> cronScheduleBuilder = CronScheduleBuilder.cronSchedule("0/10 * * * * MON-FRI *");
+		// SimpleTrigger trigger =
+		// newTrigger().withIdentity(TriggerKey.createUniqueName(triggerGroup),
+		// triggerGroup).startAt(runDate)
+		// .withSchedule(simpleSchedule().withIntervalInSeconds(5).repeatForever()).modifiedByCalendar(calendarName).build();
+		Trigger trigger = TriggerBuilder.newTrigger().withIdentity(TriggerKey.createUniqueName(triggerGroup), triggerGroup)
+				.withSchedule(cronScheduleBuilder).modifiedByCalendar(calendarName).build();
+		sched.scheduleJob(job, trigger);
+		log.info("------- Starting Scheduler ----------------");
+		sched.start();
 
-    JobDetail job = newJob(SimpleJob.class).withIdentity("job1", "group1").build();
+		log.info("------- Waiting 60 seconds... --------------");
+		try {
+			// wait 30 seconds to show jobs
+			Thread.sleep(60L * 1000L);
+			// executing...
+		} catch (Exception e) {
+			//
+		}
 
-    SimpleTrigger trigger = newTrigger().withIdentity("trigger1", "group1").startAt(runDate)
-        .withSchedule(simpleSchedule().withIntervalInHours(1).repeatForever()).modifiedByCalendar("holidays").build();
+		// shut down the scheduler
+		log.info("------- Shutting Down ---------------------");
+		sched.shutdown(true);
+		log.info("------- Shutdown Complete -----------------");
 
-    // schedule the job and print the first run date
-    Date firstRunTime = sched.scheduleJob(job, trigger);
+		SchedulerMetaData metaData = sched.getMetaData();
+		log.info("Executed " + metaData.getNumberOfJobsExecuted() + " jobs.");
 
-    // print out the first execution date.
-    // Note: Since Halloween (Oct 31) is a holiday, then
-    // we will not run until the next day! (Nov 1)
-    log.info(job.getKey() + " will run at: " + firstRunTime + " and repeat: " + trigger.getRepeatCount()
-             + " times, every " + trigger.getRepeatInterval() / 1000 + " seconds");
+	}
 
-    // All of the jobs have been added to the scheduler, but none of the jobs
-    // will run until the scheduler has been started
-    log.info("------- Starting Scheduler ----------------");
-    sched.start();
+	public static void main(String[] args) throws Exception {
 
-    // wait 30 seconds:
-    // note: nothing will run
-    log.info("------- Waiting 30 seconds... --------------");
-    try {
-      // wait 30 seconds to show jobs
-      Thread.sleep(30L * 1000L);
-      // executing...
-    } catch (Exception e) {
-      //
-    }
-
-    // shut down the scheduler
-    log.info("------- Shutting Down ---------------------");
-    sched.shutdown(true);
-    log.info("------- Shutdown Complete -----------------");
-
-    SchedulerMetaData metaData = sched.getMetaData();
-    log.info("Executed " + metaData.getNumberOfJobsExecuted() + " jobs.");
-
-  }
-
-  public static void main(String[] args) throws Exception {
-
-    CalendarExample example = new CalendarExample();
-    example.run();
-  }
+		CalendarExample example = new CalendarExample();
+		example.run();
+	}
 
 }
