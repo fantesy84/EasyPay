@@ -33,31 +33,7 @@ public class UserDAOImpl implements UserDAO {
 	 */
 	@Override
 	public List<UserDTO> findByUsernameAndPasswd(final String username, final String passwd) throws EasypayException {
-		//final String sql = "SELECT u.AUTO_ID as id,u.USERNAME as account,u.PASSWD as password,u.CREATE_TIME as created FROM EP_SYS_USER u WHERE u.USERNAME = :username AND u.PASSWD = :passwd";
-		final String sql = "SELECT u.AUTO_ID as id,u.USERNAME as account,u.PASSWD as password,u.CREATE_TIME as created,c.AUTO_ID as cid,c.CUST_NAME as custName,c.CUST_TYPE as custType,c.CREATE_TIME as createTime FROM EP_SYS_USER u LEFT JOIN EP_SYS_CUST c ON u.CUST_ID = c.AUTO_ID WHERE u.USERNAME = :username AND u.PASSWD = :passwd";
-		List<UserDTO> list = executeSqlJoin(username, passwd);
-		return list;
-	}
-
-	private List<UserDTO> executeSql(final String username, final String passwd) {
 		final String sql = "SELECT u.AUTO_ID as id,u.USERNAME as account,u.PASSWD as password,u.CREATE_TIME as created FROM EP_SYS_USER u WHERE u.USERNAME = :username AND u.PASSWD = :passwd";
-		List<UserDTO> list = template.execute(new HibernateCallback<List<UserDTO>>(){
-
-			@SuppressWarnings("unchecked")
-			@Override
-			public List<UserDTO> doInHibernate(Session session) throws HibernateException {
-				SQLQuery query = session.createSQLQuery(sql);
-				query.setParameter("username", username).setParameter("passwd", passwd);
-				//query.setResultTransformer(Transformers.aliasToBean(UserDTO.class));
-				return query.list();
-			}
-			
-		});
-		return list;
-	}
-	
-	private List<UserDTO> executeSqlJoin(final String username, final String passwd) {
-		final String sql = "SELECT u.AUTO_ID as id,u.USERNAME as account,u.PASSWD as password,u.CREATE_TIME as created,c.AUTO_ID as u.cust.id,c.CUST_NAME as u.cust.custName,c.CUST_TYPE as u.cust.custType,c.CREATE_TIME as u.cust.createTime FROM EP_SYS_USER u LEFT JOIN EP_SYS_CUST c ON u.CUST_ID = c.AUTO_ID WHERE u.USERNAME = :username AND u.PASSWD = :passwd";
 		List<UserDTO> list = template.execute(new HibernateCallback<List<UserDTO>>(){
 			
 			@SuppressWarnings("unchecked")
@@ -72,4 +48,5 @@ public class UserDAOImpl implements UserDAO {
 		});
 		return list;
 	}
+	
 }

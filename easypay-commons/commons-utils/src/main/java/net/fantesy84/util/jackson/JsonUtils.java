@@ -10,6 +10,9 @@ package net.fantesy84.util.jackson;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -25,6 +28,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.fasterxml.jackson.databind.type.ArrayType;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.databind.type.MapType;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import net.fantesy84.util.ArrayUtils;
@@ -216,5 +222,49 @@ public class JsonUtils {
 	 */
 	public <T> T toBean(String json, Class<T> javaType) {
 		return toBean(json, javaType, DEFAULT_DATEFORMAT);
+	}
+	
+	public <T> T[] arrayToBean(String json, Class<T> elementClass) {
+		ArrayType arrayType = mapper.getTypeFactory().constructArrayType(elementClass);
+		T[] array = null;
+		try {
+			array = mapper.readValue(json, arrayType);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return array;
+	}
+	
+	public <T> List<T> listToBean(String json, Class<T> elementClass) {
+		CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(List.class, elementClass);
+		List<T> list = null;
+		try {
+			list = mapper.readValue(json, collectionType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	public <T> Set<T> setToBean(String json, Class<T> elementClass) {
+		CollectionType collectionType = mapper.getTypeFactory().constructCollectionType(Set.class, elementClass);
+		Set<T> set = null;
+		try {
+			set = mapper.readValue(json, collectionType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return set;
+	}
+	
+	public <K,V> Map<K, V> mapToBean(String json, Class<K> keyClass, Class<V> valueClass) {
+		MapType mapType = mapper.getTypeFactory().constructMapType(Map.class, keyClass, valueClass);
+		Map<K, V> map = null;
+		try {
+			map = mapper.readValue(json, mapType);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return map;
 	}
 }
