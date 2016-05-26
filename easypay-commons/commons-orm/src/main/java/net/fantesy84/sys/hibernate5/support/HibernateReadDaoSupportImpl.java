@@ -105,13 +105,13 @@ public class HibernateReadDaoSupportImpl implements HibernateReadDaoSupport {
 	}
 
 	@Override
-	public <T> Pagination<T> paginationByHQL(String namedParametersHQL, Class<T> resultType, Map<String, ?> paramMap, int firstResult, int maxResults)
+	public <T extends Serializable> Pagination<T> paginationByHQL(String namedParametersHQL, Class<T> resultType, Map<String, ?> paramMap, int firstResult, int maxResults)
 			throws EasypayException {
 		return executeHql(namedParametersHQL, paramMap, resultType, firstResult, maxResults);
 	}
 
 	@Override
-	public <T> Pagination<T> paginationByExample(T paramBean, int firstResult, int maxResults) throws EasypayException {
+	public <T extends Serializable> Pagination<T> paginationByExample(T paramBean, int firstResult, int maxResults) throws EasypayException {
 		if (maxResults <= 0) {
 			throw new IllegalStateException("You don't need Pagination result! Please use method: selectByExample");
 		}
@@ -125,7 +125,7 @@ public class HibernateReadDaoSupportImpl implements HibernateReadDaoSupport {
 	}
 
 	@Override
-	public <T> Pagination<T> paginationByDetachedCriteria(DetachedCriteria dc, Class<T> entityClass, int firstResult, int maxResults)
+	public <T extends Serializable> Pagination<T> paginationByDetachedCriteria(DetachedCriteria dc, Class<T> entityClass, int firstResult, int maxResults)
 			throws EasypayException {
 		if (maxResults <= 0) {
 			throw new IllegalStateException("You don't need Pagination result! Please use method: selectByExample");

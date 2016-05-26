@@ -3,12 +3,12 @@ package net.fantesy84.commons.bean;
 import java.io.Serializable;
 import java.util.List;
 
-public class Pagination<T> implements Serializable{
+public class Pagination<E extends Serializable> implements Serializable{
 	private static final long serialVersionUID = -2627765481697925258L;
 	private Integer total;
 	private Integer size;
 	private Integer index;
-	private List<T> rows;
+	private List<E> rows;
 	public Integer getTotal() {
 		return total;
 	}
@@ -27,10 +27,10 @@ public class Pagination<T> implements Serializable{
 	public void setIndex(Integer index) {
 		this.index = index;
 	}
-	public List<T> getRows() {
+	public List<E> getRows() {
 		return rows;
 	}
-	public void setRows(List<T> rows) {
+	public void setRows(List<E> rows) {
 		this.rows = rows;
 	}
 	

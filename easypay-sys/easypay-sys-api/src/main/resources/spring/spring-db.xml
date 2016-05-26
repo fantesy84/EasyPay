@@ -22,7 +22,7 @@
 		<property name="minPoolSize" value="${datasource.read.pool.min}"/>
 		<property name="maxPoolSize" value="${datasource.read.pool.max}"/>
 		<property name="reapTimeout" value="${datasource.read.pool.reapTimeout}"/>
-		<property name="testQuery" value="${datasource.pool.testQuery}"/>
+		<property name="maxLifetime" value="${datasource.pool.maxLifeTime}"/>
 	</bean>
 	<!-- Write only dataSource -->
 	<bean id="writeDS01" class="com.atomikos.jdbc.AtomikosDataSourceBean" init-method="init" destroy-method="close">
@@ -38,7 +38,7 @@
 		<property name="minPoolSize" value="${datasource.write.pool.min}"/>
 		<property name="maxPoolSize" value="${datasource.write.pool.max}"/>
 		<property name="reapTimeout" value="${datasource.write.pool.reapTimeout}"/>
-		<property name="testQuery" value="${datasource.pool.testQuery}"/>
+		<property name="maxLifetime" value="${datasource.pool.maxLifeTime}"/>
 	</bean>
 	<!-- Hibernate read only SessionFactory config -->
 	<bean id="read01_SessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
@@ -67,6 +67,7 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
 			</props>
 		</property>
 	</bean>

@@ -22,7 +22,7 @@ public interface HibernateReadDaoSupport {
 	Integer countByHQL(String namedParametersHQL, Map<String, ?> paramMap) throws EasypayException;
 	<T> Integer countByExample(T paramBean) throws EasypayException;
 	Integer countByDetachedCriteria(DetachedCriteria dc) throws EasypayException;
-	<T> Pagination<T> paginationByHQL(String namedParametersHQL, Class<T> resultType, Map<String, ?> paramMap, int firstResult, int maxResults) throws EasypayException;
-	<T> Pagination<T> paginationByExample(T paramBean, int firstResult, int maxResults) throws EasypayException;
-	<T> Pagination<T> paginationByDetachedCriteria(DetachedCriteria dc, Class<T> entityClass, int firstResult, int maxResults) throws EasypayException;
+	<T extends Serializable> Pagination<T> paginationByHQL(String namedParametersHQL, Class<T> resultType, Map<String, ?> paramMap, int firstResult, int maxResults) throws EasypayException;
+	<T extends Serializable> Pagination<T> paginationByExample(T paramBean, int firstResult, int maxResults) throws EasypayException;
+	<T extends Serializable> Pagination<T> paginationByDetachedCriteria(DetachedCriteria dc, Class<T> entityClass, int firstResult, int maxResults) throws EasypayException;
 }

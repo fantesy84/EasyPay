@@ -24,12 +24,12 @@ public class HibernateWriteDaoSupportImpl implements HibernateWriteDaoSupport {
 	}
 
 	@Override
-	public void update(Object entity) throws EasypayException {
+	public void modify(Object entity) throws EasypayException {
 		hibernateTemplate.update(entity);
 	}
 
 	@Override
-	public void update(Object entity, LockMode mode) throws EasypayException {
+	public void modify(Object entity, LockMode mode) throws EasypayException {
 		hibernateTemplate.update(entity, mode);
 	}
 
@@ -39,12 +39,12 @@ public class HibernateWriteDaoSupportImpl implements HibernateWriteDaoSupport {
 	}
 
 	@Override
-	public void delete(Object entity) throws EasypayException {
+	public void remove(Object entity) throws EasypayException {
 		hibernateTemplate.delete(entity);
 	}
 
 	@Override
-	public void delete(Object entity, LockMode mode) throws EasypayException {
+	public void remove(Object entity, LockMode mode) throws EasypayException {
 		hibernateTemplate.delete(entity, mode);		
 	}
 
